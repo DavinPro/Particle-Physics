@@ -4,7 +4,7 @@
 #include <array>
 #include <iostream>
 #include <random>
-
+	
 #include "particle.h"
 #include "rectangle.hpp"
 #include "quadtree.hpp"
@@ -17,9 +17,9 @@ const uint16_t FPS_LIMIT = 60;
 const Rectangle<float> windowBound(0.0, 0.0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 // Particle Settings
-const unsigned int NUM_PARTS = 10;
-const float MIN_PART_RADIUS = 1.0f;
-const float MAX_PART_RADIUS = 15.0f;
+const unsigned int NUM_START_PARTS = 50;
+const float MIN_PART_RADIUS = 5.0f;
+const float MAX_PART_RADIUS = 30.0f;
 const float MIN_MASS = 4.0f;
 const float MAX_MASS = 255.0f;
 const float MIN_VELOCITY = -200.0f;
@@ -36,7 +36,7 @@ QuadTree<Particle> tree;
 const double DT = 1.0 / FPS_LIMIT;
 
 void handleEvents(sf::RenderWindow& window);
-void createParticle(float x = 0.0f, float y = 0.0f);
+void createParticle(float x = 0.0f, float y = 0.0f, Vec2<float> vel = Vec2<float>(0,0));
 void render(sf::RenderWindow& window);
 void drawQuadTree(const QuadTree<Particle>& tree, sf::RenderWindow& window);
 void drawRectangle(const Rectangle<float>& rect, sf::RectangleShape& outline, sf::RenderWindow& window);
@@ -46,12 +46,12 @@ void updateFPS(sf::Time dt);
 int main() {
     sf::ContextSettings settings;
     settings.antialiasingLevel = 4;
-    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Hello SFML", sf::Style::Titlebar | sf::Style::Close, settings);
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Particle Physics", sf::Style::Titlebar | sf::Style::Close, settings);
     window.setFramerateLimit(FPS_LIMIT);
 
     sf::Clock clock;
 
-    for (int i = 0; i < NUM_PARTS; i++)
+    for (int i = 0; i < NUM_START_PARTS; i++)
         createParticle();
 
     while (window.isOpen()) {
@@ -77,6 +77,8 @@ int main() {
 
 void handleEvents(sf::RenderWindow& window) {
     static sf::Event event;
+	static int pressX, pressY;
+	static sf::Clock clock;
 
     while (window.pollEvent(event)) {
         switch (event.type) {
@@ -95,14 +97,25 @@ void handleEvents(sf::RenderWindow& window) {
             }
             break;
         case sf::Event::MouseButtonPressed:
-            if (event.mouseButton.button == sf::Mouse::Left)
-                createParticle(event.mouseButton.x, event.mouseButton.y);
+            if (event.mouseButton.button == sf::Mouse::Left) {
+                //createParticle(event.mouseButton.x, event.mouseButton.y);
+				pressX = event.mouseButton.x;
+				pressY = event.mouseButton.y;
+				clock.restart();
+			}
             break;
-        }
+		case sf::Event::MouseButtonReleased:
+			float dragTime = clock.getElapsedTime().asSeconds();
+
+			float velX = (event.mouseButton.x - pressX) / dragTime;
+			float velY = (event.mouseButton.y - pressY) / dragTime;
+
+			createParticle(event.mouseButton.x, event.mouseButton.y, Vec2<float>(velX, velY));
+		}
     }
 }
 
-void createParticle(float x, float y) {
+void createParticle(float x, float y, Vec2<float> vel) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     static std::uniform_real_distribution<float> posDistr(MAX_PART_RADIUS, WINDOW_WIDTH - MAX_PART_RADIUS);
@@ -118,10 +131,10 @@ void createParticle(float x, float y) {
     if (x == 0.0) {
         x = posDistr(gen);
         y = posDistr(gen);
+		vel = Vec2<float>(velDistr(gen), velDistr(gen));
     }
 
-    Particle p(Vec2<float>(x, y), radDistr(gen), Vec2<float>(velDistr(gen), velDistr(gen)),
-        windowBound, massDistr(gen));
+    Particle p(Vec2<float>(x, y), radDistr(gen), vel, windowBound, massDistr(gen));
     particles.push_back(p);
 }
 
