@@ -16,6 +16,7 @@ During development I also learned about CMake and how to configure a project for
 ## Installation
 ### Prerequisites
 - [CMake](https://cmake.org/) (version 3.21+)
+- [SFML](https://www.sfml-dev.org/download.php)
 
 ### Windows with CMake
 - Clone [this repo](https://github.com/DavinPro/Particle-Physics.git)
