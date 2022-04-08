@@ -7,7 +7,7 @@ A very simple particle physics simulator.
 * [Commands](#commands)
 
 ## Purpose
-This project was created to learn how a quadtree works.
+This project was created to learn how a quadtree can be used to store and optimize searching of positional data.
 Simply drawing a quadree is no fun though, so I decided to implement some very simple physics and use
 the quadtree for collision detection. 
 
