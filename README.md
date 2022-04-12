@@ -1,17 +1,26 @@
-# Particle Physics
+<h1 align="center">
+	Particle Physics
+</h1>
 
-A very simple particle physics simulator.
+<div align="center">
+	A very simple particle physics simulator. <br><br>
+	<img src="resources/demo.gif" width=600>
+</div>
 
-* [Purpose](#purpose)
-* [Installation](#installation)
-* [Commands](#commands)
+<p align="center">
+  <a href="#purpose">Purpose</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#commands">Commands</a>
+</p>
 
 ## Purpose
 This project was created to learn how a quadtree can be used to store and optimize searching of positional data.
 Simply drawing a quadree is no fun though, so I decided to implement some very simple physics and use
 the quadtree for collision detection. 
 
-During development I also learned about CMake and how to configure a project for easy building using a make file.
+During development I also learned about CMake and how to configure a project for platform-independent building using a make file. 
+
+<br>
 
 ## Installation
 ### Prerequisites
@@ -36,6 +45,8 @@ During development I also learned about CMake and how to configure a project for
 ![configure](https://user-images.githubusercontent.com/70703647/144086041-b48ab204-72d3-4523-ac63-ff55ff84d510.jpg)
 - Click Generate
 - After generation, build the project through your IDE
+
+<br>
 
 ## Commands
 |Command|Action|
